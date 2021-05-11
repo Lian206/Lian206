@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: smallworld
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/small_world?characterEncoding=utf8&useSSL=false
+    username: root
+    password: root
+
+mybatis:
+  # 配置xml文件目录
+  mapper-locations: classpath:mapper/*.xml
+
+# 分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
