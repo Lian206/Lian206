@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.lym.small.model.dto.MessageBaseDTO;
 import com.lym.small.model.dto.MessageListDTO;
 import com.lym.small.model.pojo.Message;
-import com.lym.small.model.pojo.Picture;
 import com.lym.small.model.req.*;
 import com.lym.small.model.resp.ListResp;
 import com.lym.small.service.MessageService;
@@ -42,13 +41,13 @@ public class MessageController {
     @ApiOperation(value = "获取留言列表", notes = "通过userId、picId、留言标签名、留言类型、留言内容模糊查询留言列表")
     @PostMapping(value = "/message/queryMessageList")
     public ListResp queryMessageList(@RequestBody @Validated MessageListReq reqModel){
-        log.info("收到请求开始：[获取留言列表][/message/queryMessageList:"+reqModel.toString());
+        log.info("收到请求开始：[获取留言列表][/message/queryMessageList:" + reqModel.toString());
         MessageListDTO dto = new MessageListDTO();
         BeanUtils.copyProperties(reqModel, dto);
         PageInfo<Message> messages = messageService.queryMessageList(dto);
         // 返回结果
-        ListResp resp = new ListResp();
-        resp.setList(new ArrayList<Picture>());
+        ListResp<Message> resp = new ListResp();
+        resp.setList(new ArrayList<>());
         resp.setTotalRows((int) messages.getTotal());
         resp.setPageNum(messages.getPageNum());
         resp.setPageSize(messages.getPageSize());

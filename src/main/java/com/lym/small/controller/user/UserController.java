@@ -5,10 +5,7 @@ import com.lym.small.model.dto.UserBaseDTO;
 import com.lym.small.model.enums.UserStatusEnum;
 import com.lym.small.model.pojo.User;
 import com.lym.small.model.dto.UserListDTO;
-import com.lym.small.model.req.UserAddReq;
-import com.lym.small.model.req.UserDeleteReq;
-import com.lym.small.model.req.UserListReq;
-import com.lym.small.model.req.UserUpdateReq;
+import com.lym.small.model.req.*;
 import com.lym.small.model.resp.ListResp;
 import com.lym.small.service.UserService;
 import io.swagger.annotations.Api;
@@ -37,6 +34,17 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @ApiOperation(value = "登录", notes = "")
+    @PostMapping(value = "/user/login")
+    public Map<String, Object> login(@RequestBody @Validated UserLoginReq reqModel) {
+        log.info("收到请求开始：[用户登录][/user/login:"+reqModel.toString());
+        UserBaseDTO dto = new UserBaseDTO();
+        BeanUtils.copyProperties(reqModel, dto);
+        Map<String, Object> resultMap = userService.login(dto);
+        log.info("请求处理结束：[用户登录]" + resultMap);
+        return resultMap;
+    }
 
     /**
      * 用户列表查询

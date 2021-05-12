@@ -13,6 +13,11 @@ import com.lym.small.utils.Md5Utils;
 import com.lym.small.utils.ReturnUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -33,6 +38,29 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Override
+    public Map<String, Object> login(UserBaseDTO dto) {
+
+        UserExample example = new UserExample();
+        example.createCriteria().andUserNameEqualTo(dto.getUserName());
+        List<User> users = userMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(users)) {
+            return ReturnUtil.error(new HashMap<>(), "用户名不存在");
+        }
+        //1.获得subject
+        Subject subject = SecurityUtils.getSubject();
+        //2.封装用户数据
+        UsernamePasswordToken token = new UsernamePasswordToken(dto.getUserName(), dto.getPassword());
+        try{
+            subject.login(token);
+            return ReturnUtil.success(new HashMap<>(), "登录成功");
+        }catch (UnknownAccountException e) {
+            return ReturnUtil.error(new HashMap<>(), "用户名不存在");
+        } catch (IncorrectCredentialsException e) {
+            return ReturnUtil.error(new HashMap<>(), "用户名或密码错误");
+        }
+    }
 
     /**
      * 查用户列表

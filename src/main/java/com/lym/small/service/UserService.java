@@ -13,6 +13,9 @@ import java.util.Map;
  * @time: 2021/5/8 14:32
  */
 public interface UserService {
+
+    Map<String, Object> login(UserBaseDTO dto);
+
     /**
      * 查用户列表
      * @param dto
